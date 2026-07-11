@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catch The Insext</title>
+    <title>Catch The Insect</title>
     <link rel="stylesheet" href="sytle.css">
 </head>
 
@@ -11,6 +11,7 @@
  <div class="screen">
     <h1>Catch The Insect</h1>
     <button class="btn" id="start-btn">Play Game</button>
+    <button class="btn btn-secondary" id="view-leaderboard-btn">🏆 Leaderboard</button>
  </div>
 
  <div class="screen">
@@ -44,13 +45,44 @@
  </div>
 
   <div class="screen game-container" id="game-container">
-    <h3 id="time" class="time"> Time: 00:00</h3>
+    <h3 id="time" class="time"> Time: 00:30</h3>
     <h3 id="score" class="score">Score: 0</h3>
     <h5 id="message" class="message">
         Are you annoyed yet? <br>
         You are playing an impossible game!!
     </h5>
+    <h5 id="achievement" class="achievement">
+        🌟 New High Score! 🌟
+    </h5>
   </div>
+
+  <div class="screen" id="gameover-screen">
+    <h1>⏰ Time's Up!</h1>
+    <h2 id="final-score">Your Score: 0</h2>
+    <p id="best-score-text">Best Score: 0</p>
+
+    <div class="name-entry">
+        <input type="text" id="player-name" placeholder="Enter your name" maxlength="15">
+        <button class="btn" id="submit-score-btn">Save Score</button>
+    </div>
+
+    <div class="post-save-buttons hidden" id="post-save-buttons">
+        <button class="btn" id="see-leaderboard-btn">See Leaderboard</button>
+        <button class="btn btn-secondary" id="play-again-btn">Play Again</button>
+    </div>
+  </div>
+
+  <div class="screen" id="leaderboard-screen">
+    <h1>🏆 Top Scores</h1>
+    <ol class="leaderboard-list" id="leaderboard-list">
+        <li>Loading...</li>
+    </ol>
+    <button class="btn" id="back-home-btn">Back to Home</button>
+  </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
