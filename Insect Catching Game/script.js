@@ -3,12 +3,13 @@
 // (Get this from Firebase Console → Project Settings → General → Your apps)
 // ============================
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyD-BpUGzlPbhQ1bLUIZwW2zCN3tm-0DNyY",
+  authDomain: "insect-game-6ec5d.firebaseapp.com",
+  projectId: "insect-game-6ec5d",
+  storageBucket: "insect-game-6ec5d.firebasestorage.app",
+  messagingSenderId: "643887928455",
+  appId: "1:643887928455:web:0847fc892c301fdc3f9422",
+  measurementId: "G-FNNYRCEPB1"
 };
 
 firebase.initializeApp(firebaseConfig);
