@@ -28,7 +28,7 @@ h1 {
   padding: 15px 20px;
   font-family: inherit;
   cursor: pointer;
-
+  margin: 8px;
 }
 .btn:hover{
     opacity: 0.9;
@@ -36,6 +36,16 @@ h1 {
 }
 .btn:focus{
     outline: 0;
+}
+
+.btn-secondary{
+    background-color: transparent;
+    border: 2px solid #fff;
+    color: #fff;
+}
+.btn-secondary:hover{
+    background-color: rgba(255,255,255,0.15);
+    opacity: 1;
 }
 
 .screen{
@@ -46,6 +56,7 @@ h1 {
     height: 100vh;
     width: 100vw;
     transition: margin 0.5s ease-out ;
+    position: relative;
 
 }
  
@@ -104,7 +115,8 @@ h1 {
     right: 20px;
 }
 
-.message{
+.message,
+.achievement{
     line-height: 1.7;
     background-color: rgba(0, 0, 0, 0.5);
     width: 100%;
@@ -116,12 +128,20 @@ h1 {
     top: 0;
     left: 50%;
     transform: translate(-50%,-150%);
-    transition: transform 0.4s ease-in;
+    transition: transform 0.4s ease-in, opacity 0.4s ease-in;
+    font-size: 14px;
 }
 
-.message.visible{
+.message.visible,
+.achievement.visible{
     transform: translate(-50%,150%);
     opacity: 1;
+}
+
+.achievement{
+    background-color: rgba(255, 193, 7, 0.85);
+    color: #333;
+    font-size: 18px;
 }
 
 .insect{
@@ -144,4 +164,81 @@ h1 {
 .insect img{
     width: 100px;
     height: 100px;
+}
+
+/* ============================ */
+/* GAME OVER SCREEN */
+/* ============================ */
+#gameover-screen h2{
+    font-size: 20px;
+    margin: 20px 0 5px;
+}
+#best-score-text{
+    font-size: 12px;
+    opacity: 0.85;
+    margin-bottom: 25px;
+}
+
+.name-entry{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.name-entry input{
+    font-family: inherit;
+    padding: 12px 15px;
+    border: 2px solid #fff;
+    background: transparent;
+    color: #fff;
+    font-size: 12px;
+    outline: none;
+    width: 220px;
+}
+.name-entry input::placeholder{
+    color: rgba(255,255,255,0.6);
+}
+
+.post-save-buttons{
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.hidden{
+    display: none;
+}
+
+/* ============================ */
+/* LEADERBOARD SCREEN */
+/* ============================ */
+.leaderboard-list{
+    list-style: none;
+    padding: 0;
+    width: 90%;
+    max-width: 420px;
+    max-height: 50vh;
+    overflow-y: auto;
+    margin: 10px 0 25px;
+}
+
+.leaderboard-list li{
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 18px;
+    background-color: rgba(255,255,255,0.1);
+    margin-bottom: 8px;
+    font-size: 12px;
+    border-radius: 4px;
+}
+
+.lb-name{
+    text-align: left;
+}
+.lb-score{
+    font-weight: bold;
 }
