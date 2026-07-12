@@ -8,19 +8,19 @@
 </head>
 
 <body>
- <div class="screen">
+ <div class="screen active" id="screen-start">
     <h1>Catch The Insect</h1>
     <button class="btn" id="start-btn">Play Game</button>
     <button class="btn btn-secondary" id="view-leaderboard-btn">🏆 Leaderboard</button>
  </div>
 
- <div class="screen">
+ <div class="screen" id="screen-choose">
     <h1>What is your "favorite" insect?</h1>
     <ul class="insects-list">
         <li>
             <button class="choose-insect-btn">
                 <p>Fly</p>
-                <img src="https://pngimg.com/uploads/fly/fly_PNG3946.png" alt="flay">
+                <img src="https://pngimg.com/uploads/fly/fly_PNG3946.png" alt="fly">
             </button>
         </li>
          <li>
@@ -31,20 +31,20 @@
         </li>
          <li>
             <button class="choose-insect-btn">
-                <p>spider</p>
-                <img src="https://pngimg.com/uploads/spider/spider_PNG12.png" alt="flay">
+                <p>Spider</p>
+                <img src="https://pngimg.com/uploads/spider/spider_PNG12.png" alt="spider">
             </button>
         </li>
          <li>
             <button class="choose-insect-btn">
                 <p>Roach</p>
-                <img src="https://pngimg.com/uploads/roach/roach_PNG12163.png" alt="flay">
+                <img src="https://pngimg.com/uploads/roach/roach_PNG12163.png" alt="roach">
             </button>
         </li>
     </ul>
  </div>
 
-  <div class="screen game-container" id="game-container">
+  <div class="screen game-container" id="screen-game">
     <h3 id="time" class="time"> Time: 00:30</h3>
     <h3 id="score" class="score">Score: 0</h3>
     <h5 id="message" class="message">
@@ -56,12 +56,12 @@
     </h5>
   </div>
 
-  <div class="screen" id="gameover-screen">
+  <div class="screen" id="screen-gameover">
     <h1>⏰ Time's Up!</h1>
     <h2 id="final-score">Your Score: 0</h2>
     <p id="best-score-text">Best Score: 0</p>
 
-    <div class="name-entry">
+    <div class="name-entry" id="name-entry">
         <input type="text" id="player-name" placeholder="Enter your name" maxlength="15">
         <button class="btn" id="submit-score-btn">Save Score</button>
     </div>
@@ -72,7 +72,7 @@
     </div>
   </div>
 
-  <div class="screen" id="leaderboard-screen">
+  <div class="screen" id="screen-leaderboard">
     <h1>🏆 Top Scores</h1>
     <ol class="leaderboard-list" id="leaderboard-list">
         <li>Loading...</li>
