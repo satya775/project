@@ -109,21 +109,6 @@ The best-performing model was selected based on forecasting accuracy and error m
 
 ---
 
-## 📁 Project Structure
-
-```
-Retail-Sales-Forecasting/
-│
-├── data/
-├── notebooks/
-├── images/
-├── app.py
-├── requirements.txt
-├── README.md
-└── LICENSE
-```
-
----
 
 ## 🚀 Live Demo
 
@@ -131,11 +116,7 @@ Retail-Sales-Forecasting/
 
 ---
 
-## 📷 Project Screenshots
 
-(Add screenshots here after deployment)
-
----
 
 ## 🔮 Future Improvements
 
@@ -151,10 +132,6 @@ Retail-Sales-Forecasting/
 ## 📬 Connect With Me
 
 **GitHub:** https://github.com/satya775
-
-**LinkedIn:** *(Add your LinkedIn Profile)*
-
-**Kaggle:** *(Add your Kaggle Profile)*
 
 **LeetCode:** https://leetcode.com/u/satya778/
 
