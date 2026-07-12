@@ -1,6 +1,5 @@
 // ============================
-// 🔧 FIREBASE CONFIG — replace with YOUR project's config
-// (Get this from Firebase Console → Project Settings → General → Your apps)
+// 🔧 FIREBASE CONFIG
 // ============================
 const firebaseConfig = {
   apiKey: "AIzaSyD-BpUGzlPbhQ1bLUIZwW2zCN3tm-0DNyY",
@@ -16,28 +15,39 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 // ============================
+// SCREEN MANAGEMENT — only ONE screen visible at any time
+// ============================
+const SCREEN_IDS = ['screen-start', 'screen-choose', 'screen-game', 'screen-gameover', 'screen-leaderboard'];
+
+function showScreen(id) {
+    SCREEN_IDS.forEach(sid => {
+        const el = document.getElementById(sid);
+        el.classList.remove('active');
+    });
+    document.getElementById(id).classList.add('active');
+}
+
+// ============================
 // ELEMENTS
 // ============================
-const screens = document.querySelectorAll('.screen');
 const choose_insect_btn = document.querySelectorAll('.choose-insect-btn');
 const start_btn = document.getElementById('start-btn');
 const view_leaderboard_btn = document.getElementById('view-leaderboard-btn');
-const game_container = document.getElementById('game-container');
+const game_container = document.getElementById('screen-game');
 const timeEl = document.getElementById('time');
 const scoreEl = document.getElementById('score');
 const message = document.getElementById('message');
 const achievement = document.getElementById('achievement');
 
-const gameoverScreen = document.getElementById('gameover-screen');
 const finalScoreEl = document.getElementById('final-score');
 const bestScoreTextEl = document.getElementById('best-score-text');
+const nameEntry = document.getElementById('name-entry');
 const playerNameInput = document.getElementById('player-name');
 const submitScoreBtn = document.getElementById('submit-score-btn');
 const postSaveButtons = document.getElementById('post-save-buttons');
 const seeLeaderboardBtn = document.getElementById('see-leaderboard-btn');
 const playAgainBtn = document.getElementById('play-again-btn');
 
-const leaderboardScreen = document.getElementById('leaderboard-screen');
 const leaderboardList = document.getElementById('leaderboard-list');
 const backHomeBtn = document.getElementById('back-home-btn');
 
@@ -49,55 +59,62 @@ let timeLeft = GAME_DURATION;
 let score = 0;
 let selected_insect = {};
 let timerInterval = null;
+let spawnTimeouts = [];
 let hasShownAnnoyed = false;
 let hasShownAchievement = false;
+let gameActive = false;
 let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
 
 // ============================
-// SCREEN 0 → START
+// NAVIGATION
 // ============================
-start_btn.addEventListener('click', () => screens[0].classList.add('up'));
+start_btn.addEventListener('click', () => showScreen('screen-choose'));
 
 view_leaderboard_btn.addEventListener('click', () => {
-    screens[0].classList.add('up');
-    showLeaderboard();
+    showScreen('screen-leaderboard');
+    loadLeaderboard();
 });
 
-// ============================
-// SCREEN 1 → CHOOSE INSECT
-// ============================
 choose_insect_btn.forEach(btn => {
     btn.addEventListener('click', () => {
         const img = btn.querySelector('img');
-        const src = img.getAttribute('src');
-        const alt = img.getAttribute('alt');
-        selected_insect = { src, alt };
-        screens[1].classList.add('up');
-        resetGameState();
-        setTimeout(createInsect, 1000);
-        startGame();
+        selected_insect = { src: img.getAttribute('src'), alt: img.getAttribute('alt') };
+        showScreen('screen-game');
+        beginGame();
     });
+});
+
+backHomeBtn.addEventListener('click', () => showScreen('screen-start'));
+
+playAgainBtn.addEventListener('click', () => showScreen('screen-choose'));
+
+seeLeaderboardBtn.addEventListener('click', () => {
+    showScreen('screen-leaderboard');
+    loadLeaderboard();
 });
 
 // ============================
 // GAME LOGIC
 // ============================
-function resetGameState() {
+function beginGame() {
+    // clear any leftovers from a previous round
+    clearInterval(timerInterval);
+    spawnTimeouts.forEach(t => clearTimeout(t));
+    spawnTimeouts = [];
+    document.querySelectorAll('.insect').forEach(el => el.remove());
+
     timeLeft = GAME_DURATION;
     score = 0;
     hasShownAnnoyed = false;
     hasShownAchievement = false;
+    gameActive = true;
+
     scoreEl.innerHTML = `Score: 0`;
     timeEl.innerHTML = `Time: ${formatTime(timeLeft)}`;
     message.classList.remove('visible');
     achievement.classList.remove('visible');
 
-    // clear any leftover insects
-    document.querySelectorAll('.insect').forEach(el => el.remove());
-}
-
-function startGame() {
-    clearInterval(timerInterval);
+    spawnTimeouts.push(setTimeout(createInsect, 1000));
     timerInterval = setInterval(countdown, 1000);
 }
 
@@ -116,7 +133,7 @@ function formatTime(totalSeconds) {
 }
 
 function createInsect() {
-    if (timeLeft <= 0) return; // stop spawning once time's up
+    if (!gameActive) return;
 
     const insect = document.createElement('div');
     insect.classList.add('insect');
@@ -125,7 +142,7 @@ function createInsect() {
     insect.style.left = `${x}px`;
     insect.innerHTML = `<img src="${selected_insect.src}" alt="${selected_insect.alt}" style="transform: rotate(${Math.random() * 360}deg)" />`;
 
-    insect.addEventListener('click', catchInsect);
+    insect.addEventListener('click', () => catchInsect(insect));
 
     game_container.appendChild(insect);
 }
@@ -138,32 +155,25 @@ function getRandomLocation() {
     return { x, y };
 }
 
-function catchInsect() {
-    if (timeLeft <= 0) return;
+function catchInsect(insectEl) {
+    if (!gameActive) return;
     increaseScore();
-    this.classList.add('caught');
-    setTimeout(() => this.remove(), 2000);
-    addInsects();
-}
-
-function addInsects() {
-    if (timeLeft <= 0) return;
-    setTimeout(createInsect, 1000);
-    setTimeout(createInsect, 1500);
+    insectEl.classList.add('caught');
+    setTimeout(() => insectEl.remove(), 2000);
+    spawnTimeouts.push(setTimeout(createInsect, 1000));
+    spawnTimeouts.push(setTimeout(createInsect, 1500));
 }
 
 function increaseScore() {
     score++;
     scoreEl.innerHTML = `Score: ${score}`;
 
-    // "Annoyed" popup — shows once at score 20, auto-hides after 3s
     if (score === 20 && !hasShownAnnoyed) {
         hasShownAnnoyed = true;
         message.classList.add('visible');
         setTimeout(() => message.classList.remove('visible'), 3000);
     }
 
-    // New high score achievement — shows once per game, auto-hides after 3s
     if (score > bestScore && !hasShownAchievement) {
         hasShownAchievement = true;
         achievement.classList.add('visible');
@@ -172,7 +182,10 @@ function increaseScore() {
 }
 
 function endGame() {
+    gameActive = false;
     clearInterval(timerInterval);
+    spawnTimeouts.forEach(t => clearTimeout(t));
+    spawnTimeouts = [];
     document.querySelectorAll('.insect').forEach(el => el.remove());
 
     if (score > bestScore) {
@@ -183,12 +196,12 @@ function endGame() {
     finalScoreEl.innerHTML = `Your Score: ${score}`;
     bestScoreTextEl.innerHTML = `Best Score: ${bestScore}`;
     playerNameInput.value = '';
+    nameEntry.classList.remove('hidden');
     postSaveButtons.classList.add('hidden');
     submitScoreBtn.disabled = false;
     submitScoreBtn.innerHTML = 'Save Score';
 
-    screens[2].classList.add('up');
-    gameoverScreen.classList.add('up');
+    showScreen('screen-gameover');
 }
 
 // ============================
@@ -208,6 +221,7 @@ submitScoreBtn.addEventListener('click', async () => {
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
         submitScoreBtn.innerHTML = 'Saved! ✅';
+        nameEntry.classList.add('hidden');
         postSaveButtons.classList.remove('hidden');
     } catch (err) {
         console.error('Error saving score:', err);
@@ -216,32 +230,11 @@ submitScoreBtn.addEventListener('click', async () => {
     }
 });
 
-seeLeaderboardBtn.addEventListener('click', () => {
-    gameoverScreen.classList.add('up');
-    showLeaderboard();
-});
-
-playAgainBtn.addEventListener('click', () => {
-    gameoverScreen.classList.add('up');
-    screens[2].classList.remove('up');
-    screens[1].classList.remove('up');
-    screens[0].classList.remove('up');
-});
-
-backHomeBtn.addEventListener('click', () => {
-    leaderboardScreen.classList.add('up');
-    screens[0].classList.remove('up');
-    screens[1].classList.remove('up');
-    screens[2].classList.remove('up');
-    gameoverScreen.classList.remove('up');
-});
-
 // ============================
 // LOAD LEADERBOARD FROM FIREBASE
 // ============================
-async function showLeaderboard() {
+async function loadLeaderboard() {
     leaderboardList.innerHTML = '<li>Loading...</li>';
-    leaderboardScreen.classList.remove('up');
 
     try {
         const snapshot = await db.collection('scores')
